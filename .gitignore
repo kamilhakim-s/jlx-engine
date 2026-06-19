@@ -1,0 +1,23 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+
+# Java / JFR / profiling output
+*.class
+*.jfr
+*.hprof
+*.log
+
+# Project data (downloaded datasets, journals) — added in later chunks
+/data/
