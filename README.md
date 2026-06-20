@@ -16,6 +16,8 @@ file teaching the concepts behind it. See the progress checklist below for the f
 ```bash
 ./gradlew :benchmarks:run    # Chunk 0: the coordinated-omission / tail-latency demo
 ./gradlew :benchmarks:jmh    # Chunk 0: JMH microbenchmarks
+./gradlew :tuning:run        # Chunk 7: end-to-end latency suite (wait-strategy matrix)
+./gradlew :tuning:benchEpsilon  # Chunk 7: prove the hot path is allocation-free (no-op GC)
 ./gradlew build              # compile + test everything
 ```
 
@@ -27,7 +29,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 4** — Market data ingestion from Binance · [docs](docs/04-market-data.md)
 - [x] **Chunk 5** — Journaling & deterministic replay (Chronicle Queue) · [docs](docs/05-journaling.md)
 - [x] **Chunk 6** — Streaming analytics (Kafka + Flink) · [docs](docs/06-streaming.md)
-- [ ] Chunk 7 — Benchmarking, tuning & observability
+- [x] **Chunk 7** — Benchmarking, tuning & observability · [docs](docs/07-tuning.md)
 - [ ] Chunk 8 — *(optional)* Aeron transport + gateway
 - [ ] Chunk 9 — *(optional)* Capstone: end-to-end demo
 
@@ -40,7 +42,6 @@ file teaching the concepts behind it. See the progress checklist below for the f
 | `market-data` | Binance bulk history + WebSocket live + replay | Chunk 4 |
 | `journal` | Chronicle Queue journaling + deterministic replay | Chunk 5 |
 | `streaming` | Kafka publisher + Flink windowed analytics | Chunk 6 |
-| `journal` | Chronicle Queue journaling + replay | Chunk 5 |
-| `streaming` | Kafka producers + Flink jobs | Chunk 6 |
+| `tuning` | Latency benchmark suite + GC experiments + CPU affinity | Chunk 7 |
 | `gateway` | Aeron transport + order-entry gateway | Chunk 8 |
 | `app` | End-to-end wiring | Chunk 9 |

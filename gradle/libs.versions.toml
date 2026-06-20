@@ -13,6 +13,8 @@ chronicle-queue = "2026.4"
 flink = "2.2.0"
 flink-connector-kafka = "5.0.0-2.2"
 kafka = "4.2.0"
+affinity = "3.23.3"
+jna = "5.14.0"
 
 [libraries]
 hdrhistogram = { module = "org.hdrhistogram:HdrHistogram", version.ref = "hdrhistogram" }
@@ -25,6 +27,11 @@ flink-streaming = { module = "org.apache.flink:flink-streaming-java", version.re
 flink-clients = { module = "org.apache.flink:flink-clients", version.ref = "flink" }
 flink-connector-kafka = { module = "org.apache.flink:flink-connector-kafka", version.ref = "flink-connector-kafka" }
 kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka" }
+affinity = { module = "net.openhft:affinity", version.ref = "affinity" }
+# affinity transitively pins JNA 5.5.0, which ships NO arm64 native — it fails to load on Apple
+# Silicon. Force a current JNA (Gradle resolves the higher version) so native pinning works there too.
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 jmh-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
