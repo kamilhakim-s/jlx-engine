@@ -23,7 +23,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 0** — Foundations & measurement harness · [docs](docs/00-foundations.md)
 - [x] **Chunk 1** — Order book & matching (correct, single-threaded) · [docs](docs/01-order-book.md)
 - [x] **Chunk 2** — Zero-allocation & data-structure optimisation · [docs](docs/02-zero-gc.md)
-- [ ] Chunk 3 — The Disruptor: single-writer engine
+- [x] **Chunk 3** — The Disruptor: single-writer engine · [docs](docs/03-disruptor.md)
 - [ ] Chunk 4 — Market data ingestion from Binance
 - [ ] Chunk 5 — Journaling & deterministic replay (Chronicle Queue)
 - [ ] Chunk 6 — Streaming analytics (Kafka + Flink)
@@ -36,7 +36,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 |---|---|---|
 | `benchmarks` | JMH suites + measurement demos (HdrHistogram) | Chunk 0 |
 | `engine-core` | Domain model, order book, matching (+ zero-alloc engine) | Chunk 1–2 |
-| `engine-disruptor` | Disruptor ring-buffer wiring | Chunk 3 |
+| `engine-disruptor` | Disruptor ring-buffer wiring (single-writer service) | Chunk 3 |
 | `market-data` | Binance REST history + WebSocket live + replay | Chunk 4 |
 | `journal` | Chronicle Queue journaling + replay | Chunk 5 |
 | `streaming` | Kafka producers + Flink jobs | Chunk 6 |
