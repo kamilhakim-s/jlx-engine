@@ -14,6 +14,7 @@ plugins {
 
 dependencies {
     implementation(libs.hdrhistogram)
+    implementation(project(":engine-core")) // benchmark the matching engines
 }
 
 application {
@@ -26,4 +27,7 @@ jmh {
     warmupIterations.set(3)
     iterations.set(5)
     fork.set(1)
+    // The GC profiler reports "·gc.alloc.rate.norm" = bytes allocated per op. This is how we
+    // prove the Chunk 2 match path is ~0 B/op versus the Chunk 1 engine's per-trade garbage.
+    profilers.add("gc")
 }

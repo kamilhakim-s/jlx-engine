@@ -9,6 +9,11 @@ plugins {
 }
 
 dependencies {
+    // Low-latency collections used by the Chunk 2 zero-allocation engine. Kept as
+    // implementation deps — they don't leak into engine-core's public API.
+    implementation(libs.agrona)     // primitive-keyed Long2ObjectHashMap (id index)
+    implementation(libs.fastutil)   // primitive-keyed sorted Long2ObjectRBTreeMap (price levels)
+
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)
     testRuntimeOnly(libs.junit.launcher)

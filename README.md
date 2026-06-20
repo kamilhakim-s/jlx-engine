@@ -22,7 +22,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 ## Progress
 - [x] **Chunk 0** — Foundations & measurement harness · [docs](docs/00-foundations.md)
 - [x] **Chunk 1** — Order book & matching (correct, single-threaded) · [docs](docs/01-order-book.md)
-- [ ] Chunk 2 — Zero-allocation & data-structure optimisation
+- [x] **Chunk 2** — Zero-allocation & data-structure optimisation · [docs](docs/02-zero-gc.md)
 - [ ] Chunk 3 — The Disruptor: single-writer engine
 - [ ] Chunk 4 — Market data ingestion from Binance
 - [ ] Chunk 5 — Journaling & deterministic replay (Chronicle Queue)
@@ -35,7 +35,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 | Module | Purpose | Added in |
 |---|---|---|
 | `benchmarks` | JMH suites + measurement demos (HdrHistogram) | Chunk 0 |
-| `engine-core` | Domain model, order book, matching | Chunk 1 |
+| `engine-core` | Domain model, order book, matching (+ zero-alloc engine) | Chunk 1–2 |
 | `engine-disruptor` | Disruptor ring-buffer wiring | Chunk 3 |
 | `market-data` | Binance REST history + WebSocket live + replay | Chunk 4 |
 | `journal` | Chronicle Queue journaling + replay | Chunk 5 |

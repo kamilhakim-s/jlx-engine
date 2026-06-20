@@ -5,9 +5,13 @@ jmh = "1.37"
 hdrhistogram = "2.2.2"
 junit = "5.11.3"
 assertj = "3.26.3"
+agrona = "1.22.0"
+fastutil = "8.5.15"
 
 [libraries]
 hdrhistogram = { module = "org.hdrhistogram:HdrHistogram", version.ref = "hdrhistogram" }
+agrona = { module = "org.agrona:agrona", version.ref = "agrona" }
+fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 jmh-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
