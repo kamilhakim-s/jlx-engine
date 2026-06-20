@@ -9,5 +9,6 @@ rootProject.name = "low-latency"
 
 include(":engine-core")
 include(":engine-disruptor")
+include(":journal")
 include(":market-data")
 include(":benchmarks")

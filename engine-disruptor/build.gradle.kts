@@ -9,7 +9,7 @@ plugins {
 dependencies {
     api(project(":engine-core"))
     implementation(libs.disruptor)
-    implementation(libs.hdrhistogram)   // end-to-end latency measurement in the demo/handler
+    api(libs.hdrhistogram)   // Histogram appears in DisruptorMatchingService's public constructor
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)

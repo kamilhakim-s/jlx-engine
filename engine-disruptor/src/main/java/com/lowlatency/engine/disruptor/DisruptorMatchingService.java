@@ -4,7 +4,9 @@ import com.lowlatency.engine.FastMatchingEngine;
 import com.lowlatency.engine.FastOrderBook;
 import com.lowlatency.engine.OrderType;
 import com.lowlatency.engine.Side;
+import com.lowlatency.engine.TradeHandler;
 import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -38,7 +40,28 @@ public final class DisruptorMatchingService {
                                     WaitStrategy waitStrategy,
                                     int expectedOrders,
                                     Histogram latencyNanos) {
-        this.tradeSink = new CountingTradeSink();
+        this(ringBufferSize, producerType, waitStrategy, expectedOrders, latencyNanos, null, null);
+    }
+
+    /**
+     * Full constructor. Two optional hooks support Chunk 5:
+     * <ul>
+     *   <li>{@code journaller} — an extra {@link EventHandler} that consumes the <i>same</i> ring
+     *       buffer <b>in parallel</b> with the matching engine (the LMAX pattern). It sees every
+     *       command in the same order the engine does, which is what makes deterministic replay
+     *       possible. Journaling latency stays off the matching critical path.</li>
+     *   <li>{@code tradeListener} — receives every trade the engine produces (in addition to internal
+     *       counting), e.g. to capture the trade tape for a determinism check.</li>
+     * </ul>
+     */
+    public DisruptorMatchingService(int ringBufferSize,
+                                    ProducerType producerType,
+                                    WaitStrategy waitStrategy,
+                                    int expectedOrders,
+                                    Histogram latencyNanos,
+                                    EventHandler<OrderCommand> journaller,
+                                    TradeHandler tradeListener) {
+        this.tradeSink = new CountingTradeSink(tradeListener);
         FastMatchingEngine engine =
                 new FastMatchingEngine(new FastOrderBook(), tradeSink, expectedOrders);
         this.handler = new MatchingEngineEventHandler(engine, latencyNanos);
@@ -46,7 +69,12 @@ public final class DisruptorMatchingService {
         // Pre-allocated events (OrderCommand::new), a dedicated daemon consumer thread.
         this.disruptor = new Disruptor<>(
                 OrderCommand::new, ringBufferSize, DaemonThreadFactory.INSTANCE, producerType, waitStrategy);
-        this.disruptor.handleEventsWith(handler);
+        if (journaller != null) {
+            // Journaller and matcher run as independent parallel consumers of the same events.
+            this.disruptor.handleEventsWith(journaller, handler);
+        } else {
+            this.disruptor.handleEventsWith(handler);
+        }
         this.ringBuffer = disruptor.getRingBuffer();
     }
 

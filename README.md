@@ -25,7 +25,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 2** — Zero-allocation & data-structure optimisation · [docs](docs/02-zero-gc.md)
 - [x] **Chunk 3** — The Disruptor: single-writer engine · [docs](docs/03-disruptor.md)
 - [x] **Chunk 4** — Market data ingestion from Binance · [docs](docs/04-market-data.md)
-- [ ] Chunk 5 — Journaling & deterministic replay (Chronicle Queue)
+- [x] **Chunk 5** — Journaling & deterministic replay (Chronicle Queue) · [docs](docs/05-journaling.md)
 - [ ] Chunk 6 — Streaming analytics (Kafka + Flink)
 - [ ] Chunk 7 — Benchmarking, tuning & observability
 - [ ] Chunk 8 — *(optional)* Aeron transport + gateway
@@ -38,6 +38,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 | `engine-core` | Domain model, order book, matching (+ zero-alloc engine) | Chunk 1–2 |
 | `engine-disruptor` | Disruptor ring-buffer wiring (single-writer service) | Chunk 3 |
 | `market-data` | Binance bulk history + WebSocket live + replay | Chunk 4 |
+| `journal` | Chronicle Queue journaling + deterministic replay | Chunk 5 |
 | `journal` | Chronicle Queue journaling + replay | Chunk 5 |
 | `streaming` | Kafka producers + Flink jobs | Chunk 6 |
 | `gateway` | Aeron transport + order-entry gateway | Chunk 8 |

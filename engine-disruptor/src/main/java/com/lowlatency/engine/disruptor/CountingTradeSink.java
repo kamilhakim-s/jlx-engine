@@ -10,13 +10,25 @@ import com.lowlatency.engine.TradeHandler;
  */
 final class CountingTradeSink implements TradeHandler {
 
+    private final TradeHandler delegate; // optional downstream listener (may be null)
     private volatile long tradeCount;
     private volatile long matchedQuantity;
+
+    CountingTradeSink() {
+        this(null);
+    }
+
+    CountingTradeSink(TradeHandler delegate) {
+        this.delegate = delegate;
+    }
 
     @Override
     public void onTrade(Trade trade) {
         tradeCount++;
         matchedQuantity += trade.quantity();
+        if (delegate != null) {
+            delegate.onTrade(trade);
+        }
     }
 
     long tradeCount() {
