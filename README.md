@@ -21,7 +21,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 
 ## Progress
 - [x] **Chunk 0** — Foundations & measurement harness · [docs](docs/00-foundations.md)
-- [ ] Chunk 1 — Order book & matching (correct, single-threaded)
+- [x] **Chunk 1** — Order book & matching (correct, single-threaded) · [docs](docs/01-order-book.md)
 - [ ] Chunk 2 — Zero-allocation & data-structure optimisation
 - [ ] Chunk 3 — The Disruptor: single-writer engine
 - [ ] Chunk 4 — Market data ingestion from Binance
