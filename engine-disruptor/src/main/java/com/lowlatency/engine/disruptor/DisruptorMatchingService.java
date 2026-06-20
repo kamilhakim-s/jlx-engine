@@ -91,6 +91,14 @@ public final class DisruptorMatchingService {
         this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, latencyNanos);
     }
 
+    /**
+     * Convenience constructor: single producer, busy-spin, forwarding every trade to {@code tradeListener}
+     * (e.g. the streaming tier's async forwarder). Keeps Disruptor types out of caller modules.
+     */
+    public DisruptorMatchingService(int ringBufferSize, int expectedOrders, TradeHandler tradeListener) {
+        this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, null, null, tradeListener);
+    }
+
     /** Starts the consumer thread. Call once before publishing. */
     public void start() {
         disruptor.start();

@@ -26,7 +26,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 3** — The Disruptor: single-writer engine · [docs](docs/03-disruptor.md)
 - [x] **Chunk 4** — Market data ingestion from Binance · [docs](docs/04-market-data.md)
 - [x] **Chunk 5** — Journaling & deterministic replay (Chronicle Queue) · [docs](docs/05-journaling.md)
-- [ ] Chunk 6 — Streaming analytics (Kafka + Flink)
+- [x] **Chunk 6** — Streaming analytics (Kafka + Flink) · [docs](docs/06-streaming.md)
 - [ ] Chunk 7 — Benchmarking, tuning & observability
 - [ ] Chunk 8 — *(optional)* Aeron transport + gateway
 - [ ] Chunk 9 — *(optional)* Capstone: end-to-end demo
@@ -39,6 +39,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 | `engine-disruptor` | Disruptor ring-buffer wiring (single-writer service) | Chunk 3 |
 | `market-data` | Binance bulk history + WebSocket live + replay | Chunk 4 |
 | `journal` | Chronicle Queue journaling + deterministic replay | Chunk 5 |
+| `streaming` | Kafka publisher + Flink windowed analytics | Chunk 6 |
 | `journal` | Chronicle Queue journaling + replay | Chunk 5 |
 | `streaming` | Kafka producers + Flink jobs | Chunk 6 |
 | `gateway` | Aeron transport + order-entry gateway | Chunk 8 |
