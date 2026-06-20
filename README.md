@@ -18,6 +18,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 ./gradlew :benchmarks:jmh    # Chunk 0: JMH microbenchmarks
 ./gradlew :tuning:run        # Chunk 7: end-to-end latency suite (wait-strategy matrix)
 ./gradlew :tuning:benchEpsilon  # Chunk 7: prove the hot path is allocation-free (no-op GC)
+./gradlew :gateway:run       # Chunk 8: orders over Aeron → gateway → engine (end-to-end latency)
 ./gradlew build              # compile + test everything
 ```
 
@@ -30,7 +31,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 5** — Journaling & deterministic replay (Chronicle Queue) · [docs](docs/05-journaling.md)
 - [x] **Chunk 6** — Streaming analytics (Kafka + Flink) · [docs](docs/06-streaming.md)
 - [x] **Chunk 7** — Benchmarking, tuning & observability · [docs](docs/07-tuning.md)
-- [ ] Chunk 8 — *(optional)* Aeron transport + gateway
+- [x] **Chunk 8** — Aeron transport + order-entry gateway · [docs](docs/08-gateway.md)
 - [ ] Chunk 9 — *(optional)* Capstone: end-to-end demo
 
 ## Module layout (grows each chunk)
