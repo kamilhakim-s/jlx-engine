@@ -19,6 +19,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 ./gradlew :tuning:run        # Chunk 7: end-to-end latency suite (wait-strategy matrix)
 ./gradlew :tuning:benchEpsilon  # Chunk 7: prove the hot path is allocation-free (no-op GC)
 ./gradlew :gateway:run       # Chunk 8: orders over Aeron → gateway → engine (end-to-end latency)
+./gradlew :app:run           # Chunk 9: the whole pipeline end-to-end (market data → … → candles)
 ./gradlew build              # compile + test everything
 ```
 
@@ -32,7 +33,7 @@ file teaching the concepts behind it. See the progress checklist below for the f
 - [x] **Chunk 6** — Streaming analytics (Kafka + Flink) · [docs](docs/06-streaming.md)
 - [x] **Chunk 7** — Benchmarking, tuning & observability · [docs](docs/07-tuning.md)
 - [x] **Chunk 8** — Aeron transport + order-entry gateway · [docs](docs/08-gateway.md)
-- [ ] Chunk 9 — *(optional)* Capstone: end-to-end demo
+- [x] **Chunk 9** — Capstone: full end-to-end pipeline · [docs](docs/09-capstone.md)
 
 ## Module layout (grows each chunk)
 | Module | Purpose | Added in |
@@ -45,4 +46,4 @@ file teaching the concepts behind it. See the progress checklist below for the f
 | `streaming` | Kafka publisher + Flink windowed analytics | Chunk 6 |
 | `tuning` | Latency benchmark suite + GC experiments + CPU affinity | Chunk 7 |
 | `gateway` | Aeron transport + order-entry gateway | Chunk 8 |
-| `app` | End-to-end wiring | Chunk 9 |
+| `app` | Capstone: full pipeline wired end-to-end | Chunk 9 |
