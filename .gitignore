@@ -19,5 +19,7 @@ build/
 *.hprof
 *.log
 
-# Project data (downloaded datasets, journals) — added in later chunks
-/data/
+# Project data (downloaded datasets, journals). Unanchored so it matches a `data/`
+# directory at the repo root or under any module (e.g. market-data/data/ created when
+# a demo runs with the module as its working directory).
+data/

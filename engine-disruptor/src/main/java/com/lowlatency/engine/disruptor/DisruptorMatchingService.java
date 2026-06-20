@@ -55,6 +55,14 @@ public final class DisruptorMatchingService {
         this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, null);
     }
 
+    /**
+     * Convenience constructor: single producer, busy-spin, recording end-to-end latency into the
+     * given histogram. Lets callers (e.g. the market-data demo) avoid importing Disruptor types.
+     */
+    public DisruptorMatchingService(int ringBufferSize, int expectedOrders, Histogram latencyNanos) {
+        this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, latencyNanos);
+    }
+
     /** Starts the consumer thread. Call once before publishing. */
     public void start() {
         disruptor.start();
