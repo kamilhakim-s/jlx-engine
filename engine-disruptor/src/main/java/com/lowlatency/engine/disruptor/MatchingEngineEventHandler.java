@@ -4,6 +4,7 @@ import com.lowlatency.engine.FastMatchingEngine;
 import com.lowlatency.engine.Order;
 import com.lmax.disruptor.EventHandler;
 import org.HdrHistogram.Histogram;
+import org.HdrHistogram.SingleWriterRecorder;
 
 /**
  * The Disruptor consumer: the <b>single writer</b> to the matching engine.
@@ -21,13 +22,28 @@ import org.HdrHistogram.Histogram;
 final class MatchingEngineEventHandler implements EventHandler<OrderCommand> {
 
     private final FastMatchingEngine engine;
-    private final Histogram latencyNanos; // may be null when latency isn't being measured
+    private final Histogram latencyNanos;            // may be null; read only after draining
+    private final SingleWriterRecorder latencyRecorder; // may be null; safe to sample live (Chunk 10)
 
     private volatile long processedCount; // single-writer; volatile for cross-thread reads
 
     MatchingEngineEventHandler(FastMatchingEngine engine, Histogram latencyNanos) {
         this.engine = engine;
         this.latencyNanos = latencyNanos;
+        this.latencyRecorder = null;
+    }
+
+    /**
+     * Records latency into a {@link SingleWriterRecorder} instead of a plain {@link Histogram}. A plain
+     * histogram cannot be read on one thread while written on another; the recorder is built for exactly
+     * that — <b>one</b> writer (this consumer, the engine's only thread) plus a separate sampling reader
+     * that calls {@code getIntervalHistogram()}. That's the single-writer principle again, now in service
+     * of live observability (the Chunk 10 dashboard samples percentiles every ~250 ms).
+     */
+    MatchingEngineEventHandler(FastMatchingEngine engine, SingleWriterRecorder latencyRecorder) {
+        this.engine = engine;
+        this.latencyNanos = null;
+        this.latencyRecorder = latencyRecorder;
     }
 
     @Override
@@ -44,10 +60,15 @@ final class MatchingEngineEventHandler implements EventHandler<OrderCommand> {
 
         processedCount++;
 
-        if (latencyNanos != null && command.ingressNanos() != 0) {
+        if (command.ingressNanos() != 0) {
             long elapsed = System.nanoTime() - command.ingressNanos();
             // HdrHistogram requires a positive value; clamp pathological clock readings to 1ns.
-            latencyNanos.recordValue(Math.max(1, elapsed));
+            long value = Math.max(1, elapsed);
+            if (latencyRecorder != null) {
+                latencyRecorder.recordValue(value);
+            } else if (latencyNanos != null) {
+                latencyNanos.recordValue(value);
+            }
         }
     }
 

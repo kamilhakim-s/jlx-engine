@@ -23,3 +23,7 @@ build/
 # directory at the repo root or under any module (e.g. market-data/data/ created when
 # a demo runs with the module as its working directory).
 data/
+
+# Frontend (dashboard-web) build + deps
+dashboard-web/node_modules/
+dashboard-web/dist/

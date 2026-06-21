@@ -1,0 +1,54 @@
+# Deploys the dashboard SPA in "demo" mode (a recorded session replayed client-side) to GitHub Pages, so
+# the live console is viewable straight from the repo with no JVM or backend. The recording lives at
+# dashboard-web/public/demo-frames.ndjson (regenerate with `./gradlew :dashboard:recordDemo`).
+name: Deploy dashboard demo to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dashboard-web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - name: Build demo bundle
+        env:
+          VITE_DEMO: "1"
+          # Project Pages serve under /<repo>/ — set the base path to match.
+          VITE_BASE: "/${{ github.event.repository.name }}/"
+        run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard-web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
