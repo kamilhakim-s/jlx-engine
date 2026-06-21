@@ -33,7 +33,8 @@ public final class JournalDemo {
         CommandJournaller journaller = new CommandJournaller(journalDir);
         CollectingTradeHandler tapeA = new CollectingTradeHandler();
         DisruptorMatchingService service = new DisruptorMatchingService(
-                1 << 16, ProducerType.SINGLE, new BusySpinWaitStrategy(), 1 << 16, null, journaller, tapeA);
+                1 << 16, ProducerType.SINGLE, new BusySpinWaitStrategy(), 1 << 16,
+                (org.HdrHistogram.Histogram) null, journaller, tapeA);
         service.start();
         SyntheticOrderFlow.feed(service, COMMANDS, SEED);
         service.shutdown();   // drains both the matcher and the journaller

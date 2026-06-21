@@ -8,11 +8,13 @@ import com.lowlatency.engine.TradeHandler;
 import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import com.lmax.disruptor.RingBuffer;
 import org.HdrHistogram.Histogram;
+import org.HdrHistogram.SingleWriterRecorder;
 
 /**
  * Front door to the matching engine: a Disruptor ring buffer feeding a single consumer thread that
@@ -78,6 +80,46 @@ public final class DisruptorMatchingService {
         this.ringBuffer = disruptor.getRingBuffer();
     }
 
+    /**
+     * Recorder variant of the full constructor (Chunk 10). Records end-to-end latency into a
+     * {@link SingleWriterRecorder} — which, unlike a plain {@link Histogram}, can be safely sampled from
+     * another thread while the single consumer keeps writing — so a live dashboard can read percentiles
+     * without disturbing the engine. All other wiring is identical.
+     */
+    public DisruptorMatchingService(int ringBufferSize,
+                                    ProducerType producerType,
+                                    WaitStrategy waitStrategy,
+                                    int expectedOrders,
+                                    SingleWriterRecorder latencyRecorder,
+                                    EventHandler<OrderCommand> journaller,
+                                    TradeHandler tradeListener) {
+        this.tradeSink = new CountingTradeSink(tradeListener);
+        FastMatchingEngine engine =
+                new FastMatchingEngine(new FastOrderBook(), tradeSink, expectedOrders);
+        this.handler = new MatchingEngineEventHandler(engine, latencyRecorder);
+
+        this.disruptor = new Disruptor<>(
+                OrderCommand::new, ringBufferSize, DaemonThreadFactory.INSTANCE, producerType, waitStrategy);
+        if (journaller != null) {
+            this.disruptor.handleEventsWith(journaller, handler);
+        } else {
+            this.disruptor.handleEventsWith(handler);
+        }
+        this.ringBuffer = disruptor.getRingBuffer();
+    }
+
+    /**
+     * Convenience for live observability (Chunk 10 dashboard): records latency into a
+     * {@link SingleWriterRecorder} and forwards every trade to {@code tradeListener}. Uses a
+     * {@link YieldingWaitStrategy} rather than busy-spin so a long-running, often-idle dashboard doesn't
+     * peg a core — while still giving near-busy-spin latency under load.
+     */
+    public DisruptorMatchingService(int ringBufferSize, int expectedOrders,
+                                    SingleWriterRecorder latencyRecorder, TradeHandler tradeListener) {
+        this(ringBufferSize, ProducerType.SINGLE, new YieldingWaitStrategy(), expectedOrders,
+                latencyRecorder, null, tradeListener);
+    }
+
     /** Convenience constructor: single producer, busy-spin (lowest latency), no latency recording. */
     public DisruptorMatchingService(int ringBufferSize, int expectedOrders) {
         this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, null);
@@ -89,6 +131,16 @@ public final class DisruptorMatchingService {
      */
     public DisruptorMatchingService(int ringBufferSize, int expectedOrders, Histogram latencyNanos) {
         this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders, latencyNanos);
+    }
+
+    /**
+     * Convenience constructor: single producer, busy-spin, forwarding every trade to {@code tradeListener}
+     * (e.g. the streaming tier's async forwarder). Keeps Disruptor types out of caller modules.
+     */
+    public DisruptorMatchingService(int ringBufferSize, int expectedOrders, TradeHandler tradeListener) {
+        // (Histogram) null disambiguates from the SingleWriterRecorder full constructor (Chunk 10).
+        this(ringBufferSize, ProducerType.SINGLE, new BusySpinWaitStrategy(), expectedOrders,
+                (Histogram) null, null, tradeListener);
     }
 
     /** Starts the consumer thread. Call once before publishing. */

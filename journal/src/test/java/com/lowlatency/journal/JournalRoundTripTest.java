@@ -27,7 +27,8 @@ class JournalRoundTripTest {
         CommandJournaller journaller = new CommandJournaller(journalDir);
         CollectingTradeHandler liveTape = new CollectingTradeHandler();
         DisruptorMatchingService service = new DisruptorMatchingService(
-                1 << 14, ProducerType.SINGLE, new YieldingWaitStrategy(), 1 << 14, null, journaller, liveTape);
+                1 << 14, ProducerType.SINGLE, new YieldingWaitStrategy(), 1 << 14,
+                (org.HdrHistogram.Histogram) null, journaller, liveTape);
         service.start();
         SyntheticOrderFlow.feed(service, 20_000, 7);
         service.shutdown();
